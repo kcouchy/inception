@@ -1,42 +1,21 @@
-##http://nginx.org/en/docs/http/configuring_https_servers.html
-
-# Virtual Host configuration for example.com
-#
-# You can move that to a different file under sites-available/ and symlink that
-# to sites-enabled/ to enable it.
-#
-#server {
-#	listen 80;
-#	listen [::]:80;
-#
-#	server_name example.com;
-#
-#	root /var/www/example.com;
-#	index index.html;
-#
-#	location / {
-#		try_files $uri $uri/ =404;
-#	}
-#}
-
 server {
-    listen              443 ssl;
-    server_name         localhost kcouchma.42.fr;
-    ssl_certificate     /etc/nginx/ssl/inception.crt;
-    ssl_certificate_key /etc/nginx/ssl/inception.key;
-    ssl_protocols       TLSv1.2 TLSv1.3;
-    ssl_ciphers         HIGH:!aNULL:!MD5;
-    root				/var/www.html;
-	index				index.php; #index file existence is checked in this order
 
-    location ~ \.php$ { #handles any php requests 
-		# include /etc/nginx/fastcgi_params;
-		#fastcgi_pass wordpress:9000; #TODO decomment to activate redirection to wordpress server
-		fastcgi_index index.php;
-		# fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+	listen              443 ssl;
+	server_name         localhost kcouchma.42.fr;
+	ssl_certificate     /etc/nginx/ssl/inception.crt;
+	ssl_certificate_key /etc/nginx/ssl/inception.key;
+	ssl_protocols       TLSv1.2 TLSv1.3;
+	root				/var/www/html;
+	index				index.php;
+
+	#handles any php requests 
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass wordpress:9000;
 	}
 
+	#handles all non-php requests, if index not found, returns 404
 	location / {
-		try_files $uri $uri/ =404; #if index not found, returns 404
+		try_files $uri $uri/ =404;
 	}
 }
