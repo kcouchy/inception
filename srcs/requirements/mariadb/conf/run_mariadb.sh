@@ -9,10 +9,8 @@
 mariadbd-safe --nowatch
 
 #check db status and continue when ok
-mariadb-check -A
-while [ $? != 0 ]
+while ! mariadb-check -A
 do
-    mariadb-check -A
     sleep 1
 done
 
